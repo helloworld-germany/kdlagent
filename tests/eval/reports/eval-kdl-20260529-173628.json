@@ -1,0 +1,1520 @@
+{
+  "summary": {
+    "baseUrl": "https://func-kdl-kdlavis.azurewebsites.net",
+    "goldFile": "C:\\VisualStudioCode\\kdl-classifier\\tests\\eval\\kdl-gold.jsonl",
+    "timestamp": "2026-05-29T17:36:28.2085371+02:00",
+    "cases": 32,
+    "succeeded": 32,
+    "exactSetMatchLeaf": 24,
+    "primaryHit": 24,
+    "avgPrecisionLeaf": 0.75,
+    "avgRecallLeaf": 0.75,
+    "avgF1Leaf": 0.75,
+    "avgPrecisionSub": 0.938,
+    "avgRecallSub": 0.938,
+    "avgF1Sub": 0.938,
+    "avgPrecisionClass": 0.938,
+    "avgRecallClass": 0.938,
+    "avgF1Class": 0.938,
+    "totalClassifications": 32.0,
+    "verifiedRate": 1.0,
+    "disagreementRate": 0.0,
+    "disagreementRecovered": 0,
+    "avgConfidence": 0.987,
+    "avgDurationSec": 1.41
+  },
+  "results": [
+    {
+      "id": "ad-001",
+      "category": "AD Arztdokumentation",
+      "ok": true,
+      "expected": [
+        "AD010104"
+      ],
+      "predicted": [
+        "AD010115"
+      ],
+      "leaf": {
+        "TP": 0,
+        "Precision": 0,
+        "Recall": 0,
+        "F1": 0.0,
+        "Exact": false,
+        "Missing": [
+          "AD010104"
+        ],
+        "Extra": [
+          "AD010115"
+        ]
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": false,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.98,
+      "durationSec": 0.16
+    },
+    {
+      "id": "ad-002",
+      "category": "AD Arztdokumentation",
+      "ok": true,
+      "expected": [
+        "AD010103"
+      ],
+      "predicted": [
+        "AD010116"
+      ],
+      "leaf": {
+        "TP": 0,
+        "Precision": 0,
+        "Recall": 0,
+        "F1": 0.0,
+        "Exact": false,
+        "Missing": [
+          "AD010103"
+        ],
+        "Extra": [
+          "AD010116"
+        ]
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": false,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.98,
+      "durationSec": 0.13
+    },
+    {
+      "id": "ad-003",
+      "category": "AD Arztdokumentation",
+      "ok": true,
+      "expected": [
+        "AD010105"
+      ],
+      "predicted": [
+        "AD010105"
+      ],
+      "leaf": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": true,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.98,
+      "durationSec": 0.13
+    },
+    {
+      "id": "ad-004",
+      "category": "AD Arztdokumentation",
+      "ok": true,
+      "expected": [
+        "AD060103"
+      ],
+      "predicted": [
+        "AD060110"
+      ],
+      "leaf": {
+        "TP": 0,
+        "Precision": 0,
+        "Recall": 0,
+        "F1": 0.0,
+        "Exact": false,
+        "Missing": [
+          "AD060103"
+        ],
+        "Extra": [
+          "AD060110"
+        ]
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": false,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.99,
+      "durationSec": 0.14
+    },
+    {
+      "id": "ad-005",
+      "category": "AD Arztdokumentation",
+      "ok": true,
+      "expected": [
+        "AD020101"
+      ],
+      "predicted": [
+        "ED110107"
+      ],
+      "leaf": {
+        "TP": 0,
+        "Precision": 0,
+        "Recall": 0,
+        "F1": 0.0,
+        "Exact": false,
+        "Missing": [
+          "AD020101"
+        ],
+        "Extra": [
+          "ED110107"
+        ]
+      },
+      "sub": {
+        "TP": 0,
+        "Precision": 0,
+        "Recall": 0,
+        "F1": 0.0,
+        "Exact": false,
+        "Missing": [
+          "AD0201"
+        ],
+        "Extra": [
+          "ED1101"
+        ]
+      },
+      "class": {
+        "TP": 0,
+        "Precision": 0,
+        "Recall": 0,
+        "F1": 0.0,
+        "Exact": false,
+        "Missing": [
+          "AD"
+        ],
+        "Extra": [
+          "ED"
+        ]
+      },
+      "primaryHit": false,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.99,
+      "durationSec": 1.6
+    },
+    {
+      "id": "au-001",
+      "category": "AU Aufnahme",
+      "ok": true,
+      "expected": [
+        "AU010101"
+      ],
+      "predicted": [
+        "AU010101"
+      ],
+      "leaf": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": true,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.98,
+      "durationSec": 1.53
+    },
+    {
+      "id": "au-002",
+      "category": "AU Aufnahme",
+      "ok": true,
+      "expected": [
+        "AU190102"
+      ],
+      "predicted": [
+        "AU190102"
+      ],
+      "leaf": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": true,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.99,
+      "durationSec": 1.32
+    },
+    {
+      "id": "dg-001",
+      "category": "DG Diagnostik",
+      "ok": true,
+      "expected": [
+        "DG020103"
+      ],
+      "predicted": [
+        "DG020103"
+      ],
+      "leaf": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": true,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.99,
+      "durationSec": 1.48
+    },
+    {
+      "id": "dg-002",
+      "category": "DG Diagnostik",
+      "ok": true,
+      "expected": [
+        "DG020107"
+      ],
+      "predicted": [
+        "DG020107"
+      ],
+      "leaf": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": true,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.99,
+      "durationSec": 1.8
+    },
+    {
+      "id": "dg-003",
+      "category": "DG Diagnostik",
+      "ok": true,
+      "expected": [
+        "DG020104"
+      ],
+      "predicted": [
+        "DG020104"
+      ],
+      "leaf": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": true,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.99,
+      "durationSec": 2.13
+    },
+    {
+      "id": "dg-004",
+      "category": "DG Diagnostik",
+      "ok": true,
+      "expected": [
+        "DG060105"
+      ],
+      "predicted": [
+        "DG060111"
+      ],
+      "leaf": {
+        "TP": 0,
+        "Precision": 0,
+        "Recall": 0,
+        "F1": 0.0,
+        "Exact": false,
+        "Missing": [
+          "DG060105"
+        ],
+        "Extra": [
+          "DG060111"
+        ]
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": false,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.99,
+      "durationSec": 1.82
+    },
+    {
+      "id": "dg-005",
+      "category": "DG Diagnostik",
+      "ok": true,
+      "expected": [
+        "DG020105"
+      ],
+      "predicted": [
+        "DG020105"
+      ],
+      "leaf": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": true,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.99,
+      "durationSec": 1.51
+    },
+    {
+      "id": "lb-001",
+      "category": "LB Labor",
+      "ok": true,
+      "expected": [
+        "LB120103"
+      ],
+      "predicted": [
+        "LB120107"
+      ],
+      "leaf": {
+        "TP": 0,
+        "Precision": 0,
+        "Recall": 0,
+        "F1": 0.0,
+        "Exact": false,
+        "Missing": [
+          "LB120103"
+        ],
+        "Extra": [
+          "LB120107"
+        ]
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": false,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.99,
+      "durationSec": 1.72
+    },
+    {
+      "id": "lb-002",
+      "category": "LB Labor",
+      "ok": true,
+      "expected": [
+        "LB130101"
+      ],
+      "predicted": [
+        "LB130101"
+      ],
+      "leaf": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": true,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.99,
+      "durationSec": 1.61
+    },
+    {
+      "id": "lb-003",
+      "category": "LB Labor",
+      "ok": true,
+      "expected": [
+        "LB020101"
+      ],
+      "predicted": [
+        "LB020101"
+      ],
+      "leaf": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": true,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.99,
+      "durationSec": 1.98
+    },
+    {
+      "id": "op-001",
+      "category": "OP Operation",
+      "ok": true,
+      "expected": [
+        "OP150103"
+      ],
+      "predicted": [
+        "OP150103"
+      ],
+      "leaf": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": true,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.99,
+      "durationSec": 1.78
+    },
+    {
+      "id": "op-002",
+      "category": "OP Operation",
+      "ok": true,
+      "expected": [
+        "OP010101"
+      ],
+      "predicted": [
+        "OP010101"
+      ],
+      "leaf": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": true,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.99,
+      "durationSec": 1.42
+    },
+    {
+      "id": "pt-001",
+      "category": "PT Pathologie",
+      "ok": true,
+      "expected": [
+        "PT080102"
+      ],
+      "predicted": [
+        "PT080102"
+      ],
+      "leaf": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": true,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.99,
+      "durationSec": 1.47
+    },
+    {
+      "id": "th-001",
+      "category": "TH Therapie",
+      "ok": true,
+      "expected": [
+        "TH060103"
+      ],
+      "predicted": [
+        "TH060103"
+      ],
+      "leaf": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": true,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.99,
+      "durationSec": 1.33
+    },
+    {
+      "id": "th-002",
+      "category": "TH Therapie",
+      "ok": true,
+      "expected": [
+        "TH130103"
+      ],
+      "predicted": [
+        "TH130103"
+      ],
+      "leaf": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": true,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.99,
+      "durationSec": 1.41
+    },
+    {
+      "id": "th-003",
+      "category": "TH Therapie",
+      "ok": true,
+      "expected": [
+        "TH200103"
+      ],
+      "predicted": [
+        "TH200103"
+      ],
+      "leaf": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": true,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.99,
+      "durationSec": 1.33
+    },
+    {
+      "id": "vl-001",
+      "category": "VL Verlauf",
+      "ok": true,
+      "expected": [
+        "VL230101"
+      ],
+      "predicted": [
+        "VL230101"
+      ],
+      "leaf": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": true,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.99,
+      "durationSec": 1.35
+    },
+    {
+      "id": "vl-002",
+      "category": "VL Verlauf",
+      "ok": true,
+      "expected": [
+        "VL090101"
+      ],
+      "predicted": [
+        "VL090101"
+      ],
+      "leaf": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": true,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.99,
+      "durationSec": 1.6
+    },
+    {
+      "id": "sd-001",
+      "category": "SD Spezielle Dokumentation",
+      "ok": true,
+      "expected": [
+        "SD150103"
+      ],
+      "predicted": [
+        "SD150103"
+      ],
+      "leaf": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": true,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.99,
+      "durationSec": 1.38
+    },
+    {
+      "id": "sd-002",
+      "category": "SD Spezielle Dokumentation",
+      "ok": true,
+      "expected": [
+        "SD070201"
+      ],
+      "predicted": [
+        "SD070201"
+      ],
+      "leaf": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": true,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.99,
+      "durationSec": 1.31
+    },
+    {
+      "id": "am-001",
+      "category": "AM Administration",
+      "ok": true,
+      "expected": [
+        "AM010303"
+      ],
+      "predicted": [
+        "AM010303"
+      ],
+      "leaf": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": true,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.99,
+      "durationSec": 1.69
+    },
+    {
+      "id": "am-002",
+      "category": "AM Administration",
+      "ok": true,
+      "expected": [
+        "AM050102"
+      ],
+      "predicted": [
+        "AM050105"
+      ],
+      "leaf": {
+        "TP": 0,
+        "Precision": 0,
+        "Recall": 0,
+        "F1": 0.0,
+        "Exact": false,
+        "Missing": [
+          "AM050102"
+        ],
+        "Extra": [
+          "AM050105"
+        ]
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": false,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.97,
+      "durationSec": 2.0
+    },
+    {
+      "id": "ad-006",
+      "category": "AD multi-page",
+      "ok": true,
+      "expected": [
+        "AD010104",
+        "LB120103"
+      ],
+      "predicted": [
+        "ED110112"
+      ],
+      "leaf": {
+        "TP": 0,
+        "Precision": 0,
+        "Recall": 0,
+        "F1": 0.0,
+        "Exact": false,
+        "Missing": [
+          "AD010104",
+          "LB120103"
+        ],
+        "Extra": [
+          "ED110112"
+        ]
+      },
+      "sub": {
+        "TP": 0,
+        "Precision": 0,
+        "Recall": 0,
+        "F1": 0.0,
+        "Exact": false,
+        "Missing": [
+          "AD0101",
+          "LB1201"
+        ],
+        "Extra": [
+          "ED1101"
+        ]
+      },
+      "class": {
+        "TP": 0,
+        "Precision": 0,
+        "Recall": 0,
+        "F1": 0.0,
+        "Exact": false,
+        "Missing": [
+          "AD",
+          "LB"
+        ],
+        "Extra": [
+          "ED"
+        ]
+      },
+      "primaryHit": false,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.98,
+      "durationSec": 1.66
+    },
+    {
+      "id": "vl-003",
+      "category": "VL Verlauf",
+      "ok": true,
+      "expected": [
+        "VL040202"
+      ],
+      "predicted": [
+        "VL040202"
+      ],
+      "leaf": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": true,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.99,
+      "durationSec": 1.6
+    },
+    {
+      "id": "ed-001",
+      "category": "ED Elektronische Dokumentation",
+      "ok": true,
+      "expected": [
+        "ED110103"
+      ],
+      "predicted": [
+        "ED110103"
+      ],
+      "leaf": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": true,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.99,
+      "durationSec": 1.62
+    },
+    {
+      "id": "sf-001",
+      "category": "SF Studien/Forschung",
+      "ok": true,
+      "expected": [
+        "SF190102"
+      ],
+      "predicted": [
+        "SF190102"
+      ],
+      "leaf": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": true,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.99,
+      "durationSec": 1.59
+    },
+    {
+      "id": "ub-001",
+      "category": "UB Sonstiges",
+      "ok": true,
+      "expected": [
+        "UB999997"
+      ],
+      "predicted": [
+        "UB999997"
+      ],
+      "leaf": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "sub": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "class": {
+        "TP": 1,
+        "Precision": 1,
+        "Recall": 1,
+        "F1": 1,
+        "Exact": true,
+        "Missing": [],
+        "Extra": []
+      },
+      "primaryHit": true,
+      "nClassif": 1,
+      "verifiedCount": 1,
+      "disagreeCount": 0,
+      "disagreeRecov": 0,
+      "avgConfidence": 0.98,
+      "durationSec": 1.61
+    }
+  ]
+}

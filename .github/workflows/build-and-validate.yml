@@ -1,0 +1,50 @@
+name: build-and-validate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'infra/**'
+      - '.github/workflows/build-and-validate.yml'
+  pull_request:
+    paths:
+      - 'infra/**'
+
+permissions:
+  contents: read
+
+jobs:
+  bicep:
+    name: Bicep build + lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Bicep CLI
+        run: |
+          BICEP_VERSION=v0.43.8
+          curl -sLo bicep https://github.com/Azure/bicep/releases/download/${BICEP_VERSION}/bicep-linux-x64
+          chmod +x bicep
+          sudo mv bicep /usr/local/bin/bicep
+          bicep --version
+
+      - name: Lint Bicep
+        run: bicep lint infra/main.bicep
+
+      - name: Build main.json
+        run: bicep build infra/main.bicep --outfile infra/main.json
+
+      - name: Fail if main.json out of sync with main.bicep
+        run: |
+          committed=$(git show HEAD:infra/main.json | jq 'del(.metadata._generator)')
+          fresh=$(jq 'del(.metadata._generator)' infra/main.json)
+          if ! diff <(echo "$committed") <(echo "$fresh") > /dev/null; then
+            echo "::error::infra/main.json is out of sync with infra/main.bicep. Run 'az bicep build --file infra/main.bicep' and commit the result."
+            diff <(echo "$committed") <(echo "$fresh") | head -80
+            exit 1
+          fi
+
+      - name: Validate uiFormDefinition.json (JSON syntax)
+        run: |
+          python -m json.tool infra/uiFormDefinition.json > /dev/null
+          echo "uiFormDefinition.json: OK"

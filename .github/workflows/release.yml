@@ -1,0 +1,46 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    name: Build Function App zip and publish release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install production dependencies
+        run: npm ci --omit=dev
+
+      - name: Create deployment package
+        run: |
+          zip -r kdlagent.zip \
+            host.json package.json package-lock.json \
+            shared classify classifyMoments debug config schemas \
+            node_modules \
+            -x "*.git*" "scripts/*" "infra/*" "deploy.zip" "wwwroot.zip" ".kdl-cache/*" "package/*" "wwwroot-check/*"
+          ls -lh kdlagent.zip
+
+      - name: Upload as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kdlagent
+          path: kdlagent.zip
+
+      - name: Attach to release (only on tag push)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: kdlagent.zip
+          generate_release_notes: true

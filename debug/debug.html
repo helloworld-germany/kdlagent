@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KDL Classifier — Debug</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #0f1117; color: #e1e4ea; min-height: 100vh; padding: 2rem; }
+    h1 { font-size: 1.4rem; font-weight: 600; margin-bottom: 1.5rem; color: #7eb8ff; }
+    .container { max-width: 900px; margin: 0 auto; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+
+    .panel { background: #1a1d27; border: 1px solid #2a2d3a; border-radius: 8px; padding: 1.25rem; }
+    .panel h2 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em; color: #8b90a0; margin-bottom: 0.75rem; }
+
+    label { display: block; font-size: 0.8rem; color: #8b90a0; margin-bottom: 0.35rem; }
+    textarea { width: 100%; height: 100px; background: #12141c; border: 1px solid #2a2d3a; border-radius: 6px; color: #e1e4ea; padding: 0.6rem; font-family: inherit; font-size: 0.85rem; resize: vertical; }
+    textarea:focus { outline: none; border-color: #7eb8ff; }
+
+    select, button { font-family: inherit; font-size: 0.85rem; }
+    select { background: #12141c; color: #e1e4ea; border: 1px solid #2a2d3a; border-radius: 6px; padding: 0.4rem 0.6rem; }
+
+    .drop-zone {
+      border: 2px dashed #2a2d3a; border-radius: 8px; padding: 1.5rem; text-align: center;
+      color: #5a5f70; cursor: pointer; transition: border-color 0.15s, background 0.15s;
+      margin-bottom: 0.75rem; position: relative;
+    }
+    .drop-zone.active { border-color: #7eb8ff; background: rgba(126, 184, 255, 0.05); }
+    .drop-zone.has-file { border-color: #4ade80; color: #4ade80; }
+    .drop-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .file-name { font-size: 0.8rem; color: #8b90a0; margin-top: 0.35rem; word-break: break-all; }
+
+    .actions { display: flex; gap: 0.75rem; align-items: center; margin-top: 1rem; }
+    .btn {
+      padding: 0.5rem 1.25rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;
+      transition: background 0.15s;
+    }
+    .btn-primary { background: #2563eb; color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-primary:disabled { background: #1e3a5f; cursor: not-allowed; color: #5a7faa; }
+    .btn-secondary { background: #2a2d3a; color: #8b90a0; }
+    .btn-secondary:hover { background: #353849; }
+
+    .spinner { display: none; width: 18px; height: 18px; border: 2px solid #2a2d3a; border-top-color: #7eb8ff; border-radius: 50%; animation: spin 0.6s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .result-panel { margin-top: 1.5rem; }
+    .result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+    .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+    .badge-success { background: rgba(74, 222, 128, 0.15); color: #4ade80; }
+    .badge-warning { background: rgba(250, 204, 21, 0.15); color: #facc15; }
+    .badge-error { background: rgba(248, 113, 113, 0.15); color: #f87171; }
+
+    .classification-card {
+      background: #12141c; border: 1px solid #2a2d3a; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;
+    }
+    .classification-card .class-id { font-size: 1.6rem; font-weight: 700; color: #7eb8ff; }
+    .classification-card .class-name { font-size: 1rem; color: #e1e4ea; margin-top: 0.25rem; }
+    .classification-card .code { font-size: 0.8rem; color: #8b90a0; margin-top: 0.25rem; font-family: monospace; }
+    .confidence-bar { height: 6px; background: #2a2d3a; border-radius: 3px; margin-top: 0.75rem; overflow: hidden; }
+    .confidence-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+    .confidence-label { font-size: 0.75rem; color: #8b90a0; margin-top: 0.25rem; }
+
+    .review-list { list-style: none; margin-top: 0.5rem; }
+    .review-list li { font-size: 0.8rem; color: #facc15; padding: 0.15rem 0; }
+    .review-list li::before { content: "⚠ "; }
+
+    .primary-banner {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border: 1px solid #334155; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .primary-banner .primary-code { font-size: 1.4rem; font-weight: 700; color: #7eb8ff; font-family: monospace; }
+    .primary-banner .primary-name { font-size: 0.95rem; color: #e1e4ea; }
+    .primary-banner .primary-conf { font-size: 0.8rem; color: #8b90a0; }
+    .verified-icon { font-size: 0.9rem; }
+    .verified-yes { color: #4ade80; }
+    .verified-no { color: #facc15; }
+
+    .page-card {
+      background: #12141c; border: 1px solid #2a2d3a; border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 0.65rem;
+      display: grid; grid-template-columns: 50px 1fr auto; gap: 0.75rem; align-items: start;
+    }
+    .page-card.disagree { border-color: #facc15; border-style: dashed; }
+    .page-num { font-size: 1.1rem; font-weight: 700; color: #5a5f70; }
+    .page-detail .page-code { font-family: monospace; font-size: 0.85rem; color: #7eb8ff; }
+    .page-detail .page-display { font-size: 0.9rem; color: #e1e4ea; margin-top: 0.15rem; }
+    .page-detail .page-reasoning { font-size: 0.78rem; color: #8b90a0; margin-top: 0.25rem; font-style: italic; }
+    .page-conf { text-align: right; }
+    .page-conf .conf-value { font-size: 0.85rem; font-weight: 600; }
+    .page-conf .conf-bar { width: 60px; height: 5px; background: #2a2d3a; border-radius: 3px; margin-top: 0.25rem; overflow: hidden; }
+    .page-conf .conf-fill { height: 100%; border-radius: 3px; }
+
+    .disagree-detail { font-size: 0.75rem; color: #facc15; margin-top: 0.35rem; padding: 0.4rem 0.6rem; background: rgba(250,204,21,0.06); border-radius: 4px; }
+    .disagree-detail span { color: #8b90a0; }
+
+    .codesystem-info { font-size: 0.75rem; color: #5a5f70; margin-top: 0.5rem; }
+    .codesystem-info a { color: #7eb8ff; text-decoration: none; }
+
+    .stats-row { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .stat-chip { font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 4px; background: #1a1d27; border: 1px solid #2a2d3a; color: #8b90a0; }
+    .stat-chip b { color: #e1e4ea; }
+
+    .raw-json { margin-top: 0.75rem; }
+    .raw-json summary { font-size: 0.8rem; color: #5a5f70; cursor: pointer; }
+    .raw-json pre {
+      background: #12141c; border: 1px solid #2a2d3a; border-radius: 6px; padding: 0.75rem;
+      font-size: 0.75rem; color: #8b90a0; overflow-x: auto; margin-top: 0.5rem; white-space: pre-wrap;
+      max-height: 400px; overflow-y: auto;
+    }
+
+    .extracted-text { margin-top: 0.75rem; }
+    .extracted-text summary { font-size: 0.8rem; color: #5a5f70; cursor: pointer; }
+    .extracted-text pre {
+      background: #12141c; border: 1px solid #2a2d3a; border-radius: 6px; padding: 0.75rem;
+      font-size: 0.8rem; color: #c5c9d4; overflow-x: auto; margin-top: 0.5rem; white-space: pre-wrap;
+      max-height: 250px; overflow-y: auto;
+    }
+
+    .error-msg { background: rgba(248, 113, 113, 0.1); border: 1px solid #f87171; border-radius: 6px; padding: 0.75rem; font-size: 0.85rem; color: #f87171; margin-top: 1rem; }
+    .status-bar { font-size: 0.75rem; color: #5a5f70; margin-top: 1rem; text-align: right; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>KDL Classifier — Debug Console</h1>
+
+    <div class="grid">
+      <!-- Input: Text -->
+      <div class="panel">
+        <h2>Text Input</h2>
+        <label for="textInput">Paste clinical text</label>
+        <textarea id="textInput" placeholder="z.B. CT-Befund Schädel mit Kontrastmittel ..."></textarea>
+      </div>
+
+      <!-- Input: File -->
+      <div class="panel">
+        <h2>File Input</h2>
+        <div class="drop-zone" id="dropZone">
+          <input type="file" id="fileInput" accept="image/*,audio/*,application/pdf">
+          Drop file here or click to browse<br>
+          <span style="font-size:0.75rem">(images, PDF, audio)</span>
+        </div>
+        <div class="file-name" id="fileName"></div>
+      </div>
+    </div>
+
+    <!-- Options + Actions -->
+    <div class="panel" style="margin-top:1rem">
+      <div class="actions">
+        <label for="langHint" style="margin:0">Language:</label>
+        <select id="langHint">
+          <option value="mixed">mixed (auto)</option>
+          <option value="de" selected>de</option>
+          <option value="en">en</option>
+        </select>
+        <button class="btn btn-primary" id="btnClassify">Classify</button>
+        <div class="spinner" id="spinner"></div>
+        <button class="btn btn-secondary" id="btnClear">Clear</button>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div id="resultArea"></div>
+    <div class="status-bar" id="statusBar"></div>
+  </div>
+
+  <script>
+    const $ = (sel) => document.querySelector(sel);
+    const textInput = $('#textInput');
+    const fileInput = $('#fileInput');
+    const dropZone = $('#dropZone');
+    const fileName = $('#fileName');
+    const langHint = $('#langHint');
+    const btnClassify = $('#btnClassify');
+    const btnClear = $('#btnClear');
+    const spinner = $('#spinner');
+    const resultArea = $('#resultArea');
+    const statusBar = $('#statusBar');
+
+    let selectedFile = null;
+
+    // Drag & drop
+    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('active'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('active'));
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('active');
+      if (e.dataTransfer.files.length) setFile(e.dataTransfer.files[0]);
+    });
+    fileInput.addEventListener('change', () => { if (fileInput.files.length) setFile(fileInput.files[0]); });
+
+    function setFile(f) {
+      selectedFile = f;
+      fileName.textContent = `${f.name} (${(f.size / 1024).toFixed(1)} KB, ${f.type || 'unknown'})`;
+      dropZone.classList.add('has-file');
+      textInput.value = '';
+    }
+
+    // Clear
+    btnClear.addEventListener('click', () => {
+      textInput.value = '';
+      fileInput.value = '';
+      selectedFile = null;
+      fileName.textContent = '';
+      dropZone.classList.remove('has-file');
+      resultArea.innerHTML = '';
+      statusBar.textContent = '';
+    });
+
+    // Classify
+    btnClassify.addEventListener('click', async () => {
+      const text = textInput.value.trim();
+      if (!text && !selectedFile) { alert('Enter text or select a file.'); return; }
+
+      btnClassify.disabled = true;
+      spinner.style.display = 'inline-block';
+      resultArea.innerHTML = '';
+      statusBar.textContent = '';
+
+      const lang = langHint.value;
+      const classifyKey = '__CLASSIFY_KEY__';
+      const url = `/api/classify?languageHint=${encodeURIComponent(lang)}${classifyKey ? '&code=' + encodeURIComponent(classifyKey) : ''}`;
+      const t0 = performance.now();
+
+      try {
+        let res;
+        if (selectedFile) {
+          // Send file as base64 in JSON to avoid binary body corruption
+          const base64 = await fileToBase64(selectedFile);
+          res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ file: base64, fileContentType: selectedFile.type || 'application/octet-stream' })
+          });
+        } else {
+          res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text })
+          });
+        }
+
+        const elapsed = ((performance.now() - t0) / 1000).toFixed(2);
+        const data = await res.json();
+
+        if (!res.ok) {
+          resultArea.innerHTML = `<div class="error-msg">HTTP ${res.status}: ${esc(data.error || JSON.stringify(data))}</div>`;
+          statusBar.textContent = `${elapsed}s`;
+          return;
+        }
+
+        renderResult(data, elapsed);
+      } catch (err) {
+        resultArea.innerHTML = `<div class="error-msg">Request failed: ${esc(err.message)}</div>`;
+      } finally {
+        btnClassify.disabled = false;
+        spinner.style.display = 'none';
+      }
+    });
+
+    function renderResult(data, elapsed) {
+      let html = '<div class="result-panel">';
+
+      // Stats row
+      const total = (data.classifications || []).length;
+      const verified = (data.classifications || []).filter(c => c.verified).length;
+      const disagreed = (data.classifications || []).filter(c => c.disagreement).length;
+      html += `<div class="stats-row">
+        <span class="stat-chip"><b>${esc(data.inputType)}</b></span>
+        <span class="stat-chip"><b>${total}</b> page${total !== 1 ? 's' : ''}</span>
+        <span class="stat-chip" style="color:${verified === total ? '#4ade80' : '#facc15'}"><b>${verified}/${total}</b> verified</span>
+        ${disagreed ? `<span class="stat-chip" style="color:#facc15"><b>${disagreed}</b> disagreement${disagreed > 1 ? 's' : ''}</span>` : ''}
+        <span class="stat-chip">${elapsed}s</span>
+      </div>`;
+
+      if (!total && data.message) {
+        html += `<div class="classification-card"><div class="class-name">${esc(data.message)}</div></div>`;
+      }
+
+      // Per-page cards
+      for (const c of data.classifications || []) {
+        const conf = (c.confidence * 100).toFixed(0);
+        const confColor = c.confidence >= 0.6 ? '#4ade80' : c.confidence >= 0.4 ? '#facc15' : '#f87171';
+        const vMark = c.verified
+          ? '<span class="verified-icon verified-yes" title="Verified">✓</span>'
+          : '<span class="verified-icon verified-no" title="Not verified">?</span>';
+        const cardClass = c.disagreement ? 'page-card disagree' : 'page-card';
+
+        html += `<div class="${cardClass}">
+          <div class="page-num">P${c.page}</div>
+          <div class="page-detail">
+            <div class="page-code">${esc(c.code)} ${vMark}</div>
+            <div class="page-display">${esc(c.display)}</div>
+            <div class="page-reasoning">${esc(c.reasoning)}</div>`;
+
+        if (c.disagreement) {
+          const d = c.disagreement;
+          html += `<div class="disagree-detail">
+            <b>Context-aware:</b> ${esc(d.contextAware.code)} (${(d.contextAware.confidence * 100).toFixed(0)}%) — ${esc(d.contextAware.reasoning)}<br>
+            <b>Independent:</b> ${esc(d.independent.code)} (${(d.independent.confidence * 100).toFixed(0)}%) — ${esc(d.independent.reasoning)}
+          </div>`;
+        }
+
+        html += `</div>
+          <div class="page-conf">
+            <div class="conf-value" style="color:${confColor}">${conf}%</div>
+            <div class="conf-bar"><div class="conf-fill" style="width:${conf}%;background:${confColor}"></div></div>
+          </div>
+        </div>`;
+      }
+
+      // CodeSystem info
+      if (data.codeSystem) {
+        const cs = data.codeSystem;
+        html += `<div class="codesystem-info">
+          <a href="${esc(cs.url)}" target="_blank">${esc(cs.title || 'KDL')}</a> v${esc(cs.version)} · ${esc(cs.date)} · ${cs.codeCount} codes · fetched ${esc(cs.lastFetched)}
+        </div>`;
+      }
+
+      // Extracted text (per-page)
+      if (data.extractedPages && data.extractedPages.length) {
+        const allText = data.extractedPages.map(p => `--- Page ${p.page} ---\n${p.text}`).join('\n\n');
+        html += `<details class="extracted-text"><summary>Extracted text (${data.extractedPages.length} pages)</summary><pre>${esc(allText)}</pre></details>`;
+      }
+
+      html += `<details class="raw-json"><summary>Raw JSON response</summary><pre>${esc(JSON.stringify(data, null, 2))}</pre></details>`;
+      html += '</div>';
+
+      resultArea.innerHTML = html;
+      statusBar.textContent = `${elapsed}s`;
+    }
+
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function esc(s) {
+      const d = document.createElement('div');
+      d.textContent = String(s ?? '');
+      return d.innerHTML;
+    }
+  </script>
+</body>
+</html>

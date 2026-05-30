@@ -1,0 +1,178 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2021-09-09/uiFormDefinition.schema.json",
+  "view": {
+    "kind": "Form",
+    "properties": {
+      "title": "KDL-Classifier — 1-Click Deployment",
+      "steps": [
+        {
+          "name": "basics",
+          "label": "Grundlagen",
+          "elements": [
+            {
+              "name": "intro",
+              "type": "Microsoft.Common.InfoBox",
+              "visible": true,
+              "options": {
+                "icon": "Info",
+                "text": "Diese Deployment legt eine **Azure Function App** zur Klassifikation klinischer Dokumente gegen die **DVMD KDL CodeSystem** (Klinische Dokumentenklassen-Liste) an. Alles läuft in **Ihrem Tenant**, ausschließlich über **Managed Identity + RBAC**, Storage hängt an einem dedizierten **VNet mit Private Endpoints**. Vor dem Klick auf *Create* bitte sicherstellen: Owner-Rechte auf der Subscription + Azure-OpenAI-Quota in der gewählten Region."
+              }
+            },
+            {
+              "name": "resourceScope",
+              "type": "Microsoft.Common.ResourceScope",
+              "label": {
+                "subscription": "Subscription",
+                "location": "Region"
+              },
+              "location": {
+                "resourceTypes": [
+                  "Microsoft.Web/sites",
+                  "Microsoft.CognitiveServices/accounts",
+                  "Microsoft.EventGrid/topics"
+                ],
+                "allowedValues": [
+                  "swedencentral",
+                  "westeurope",
+                  "northeurope",
+                  "germanywestcentral",
+                  "eastus",
+                  "eastus2",
+                  "westus",
+                  "westus3"
+                ]
+              }
+            },
+            {
+              "name": "resourceGroupName",
+              "type": "Microsoft.Common.TextBox",
+              "label": "Name der neuen Resource Group",
+              "defaultValue": "rg-kdl-classifier",
+              "toolTip": "Wird neu angelegt. Muss subscription-weit eindeutig sein.",
+              "constraints": {
+                "required": true,
+                "regex": "^[a-zA-Z0-9-_().]{1,90}$",
+                "validationMessage": "1-90 Zeichen, a-z A-Z 0-9 - _ . ( ) erlaubt."
+              }
+            },
+            {
+              "name": "nameSuffix",
+              "type": "Microsoft.Common.TextBox",
+              "label": "Namens-Suffix",
+              "defaultValue": "kdl01",
+              "toolTip": "3-8 Zeichen (lowercase, a-z 0-9). Wird an alle Ressourcen angehängt (z. B. func-kdl-<suffix>).",
+              "constraints": {
+                "required": true,
+                "regex": "^[a-z0-9]{3,8}$",
+                "validationMessage": "3-8 Zeichen, nur lowercase Buchstaben + Ziffern."
+              }
+            }
+          ]
+        },
+        {
+          "name": "aoai",
+          "label": "Azure OpenAI",
+          "elements": [
+            {
+              "name": "aoaiInfo",
+              "type": "Microsoft.Common.InfoBox",
+              "visible": true,
+              "options": {
+                "icon": "Info",
+                "text": "Das Deployment legt ein **eigenes** Azure-OpenAI-Konto inkl. Modell-Deployment in Ihrem Tenant an. Sie benötigen für das gewählte Modell **Quota in der gewählten Region**. Quota beantragen: https://learn.microsoft.com/azure/ai-services/openai/quotas-limits"
+              }
+            },
+            {
+              "name": "aoaiModelName",
+              "type": "Microsoft.Common.TextBox",
+              "label": "Modellname",
+              "defaultValue": "gpt-5.4-mini",
+              "toolTip": "z. B. gpt-5.4-mini, gpt-4o-mini, gpt-4o.",
+              "constraints": {
+                "required": true,
+                "regex": "^[a-zA-Z0-9._-]+$"
+              }
+            },
+            {
+              "name": "aoaiModelVersion",
+              "type": "Microsoft.Common.TextBox",
+              "label": "Modellversion",
+              "defaultValue": "2026-03-17",
+              "toolTip": "Datums-String (YYYY-MM-DD), siehe AOAI Model-Matrix.",
+              "constraints": {
+                "required": true,
+                "regex": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+              }
+            },
+            {
+              "name": "aoaiSkuName",
+              "type": "Microsoft.Common.DropDown",
+              "label": "Deployment-SKU",
+              "defaultValue": "GlobalStandard",
+              "constraints": {
+                "required": true,
+                "allowedValues": [
+                  { "label": "GlobalStandard",     "value": "GlobalStandard" },
+                  { "label": "Standard",           "value": "Standard" },
+                  { "label": "ProvisionedManaged", "value": "ProvisionedManaged" }
+                ]
+              }
+            },
+            {
+              "name": "aoaiCapacity",
+              "type": "Microsoft.Common.Slider",
+              "label": "Kapazität (TPM in Tausend)",
+              "defaultValue": 50,
+              "min": 1,
+              "max": 1000,
+              "subLabel": "k TPM",
+              "toolTip": "Bitte an Ihre Quota anpassen. 50k reicht für moderate Klinik-Workloads."
+            }
+          ]
+        },
+        {
+          "name": "code",
+          "label": "Code",
+          "elements": [
+            {
+              "name": "codeInfo",
+              "type": "Microsoft.Common.InfoBox",
+              "visible": true,
+              "options": {
+                "icon": "Info",
+                "text": "Die Function App wird angelegt — der **Code** wird hier optional als ZIP-URL gemountet (`WEBSITE_RUN_FROM_PACKAGE`). Default ist das aktuelle GitHub-Release. Feld leeren und Code später per `deploy.ps1 -SkipInfra` publishen, falls Sie eine eigene Version deployen möchten."
+              }
+            },
+            {
+              "name": "functionPackageUrl",
+              "type": "Microsoft.Common.TextBox",
+              "label": "Function-Package URL (ZIP)",
+              "defaultValue": "https://github.com/helloworld-germany/kdlagent/releases/latest/download/kdlagent.zip",
+              "toolTip": "Public HTTPS-URL auf ein Function-App ZIP. Leer = später per deploy.ps1 publishen.",
+              "constraints": {
+                "required": false,
+                "regex": "^$|^https://.+\\.zip(\\?.*)?$",
+                "validationMessage": "Leer lassen oder gültige HTTPS-URL die auf .zip endet."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "outputs": {
+      "kind": "Subscription",
+      "location": "[steps('basics').resourceScope.location.name]",
+      "subscriptionId": "[steps('basics').resourceScope.subscription.id]",
+      "parameters": {
+        "resourceGroupName": "[steps('basics').resourceGroupName]",
+        "location": "[steps('basics').resourceScope.location.name]",
+        "nameSuffix": "[steps('basics').nameSuffix]",
+        "aoaiModelName": "[steps('aoai').aoaiModelName]",
+        "aoaiModelVersion": "[steps('aoai').aoaiModelVersion]",
+        "aoaiSkuName": "[steps('aoai').aoaiSkuName]",
+        "aoaiCapacity": "[int(steps('aoai').aoaiCapacity)]",
+        "functionPackageUrl": "[steps('code').functionPackageUrl]"
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "kdl-classifier",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "start": "func start",
+    "build": "echo 'Azure Functions build (noop)'",
+    "test": "echo 'No tests yet'"
+  },
+  "dependencies": {
+    "@azure/identity": "^4.5.0",
+    "nanoid": "^5.0.7"
+  }
+}

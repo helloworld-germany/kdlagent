@@ -1,0 +1,712 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.43.8.12551",
+      "templateHash": "16032407027141901176"
+    }
+  },
+  "parameters": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the resource group to create"
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Azure region for all resources"
+      }
+    },
+    "nameSuffix": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 8,
+      "metadata": {
+        "description": "Unique suffix for globally unique names (lowercase, 3-8 chars)"
+      }
+    },
+    "nodeVersion": {
+      "type": "string",
+      "defaultValue": "~22",
+      "metadata": {
+        "description": "Node.js runtime version"
+      }
+    },
+    "aoaiModelName": {
+      "type": "string",
+      "defaultValue": "gpt-5.4-mini",
+      "metadata": {
+        "description": "Azure OpenAI model name. Must be available in your subscription/region."
+      }
+    },
+    "aoaiModelVersion": {
+      "type": "string",
+      "defaultValue": "2026-03-17",
+      "metadata": {
+        "description": "Azure OpenAI model version (date string)."
+      }
+    },
+    "aoaiSkuName": {
+      "type": "string",
+      "defaultValue": "GlobalStandard",
+      "allowedValues": [
+        "GlobalStandard",
+        "Standard",
+        "ProvisionedManaged"
+      ],
+      "metadata": {
+        "description": "Azure OpenAI deployment SKU."
+      }
+    },
+    "aoaiCapacity": {
+      "type": "int",
+      "defaultValue": 50,
+      "minValue": 1,
+      "metadata": {
+        "description": "Azure OpenAI deployment capacity (thousands of TPM). Lower this if you hit quota limits."
+      }
+    },
+    "functionPackageUrl": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional public HTTPS URL of a Function App .zip package. When set, the app runs directly from this package (no separate code deploy needed)."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2024-03-01",
+      "name": "[parameters('resourceGroupName')]",
+      "location": "[parameters('location')]"
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('core-{0}', parameters('nameSuffix'))]",
+      "resourceGroup": "[parameters('resourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "nameSuffix": {
+            "value": "[parameters('nameSuffix')]"
+          },
+          "nodeVersion": {
+            "value": "[parameters('nodeVersion')]"
+          },
+          "aoaiModelName": {
+            "value": "[parameters('aoaiModelName')]"
+          },
+          "aoaiModelVersion": {
+            "value": "[parameters('aoaiModelVersion')]"
+          },
+          "aoaiSkuName": {
+            "value": "[parameters('aoaiSkuName')]"
+          },
+          "aoaiCapacity": {
+            "value": "[parameters('aoaiCapacity')]"
+          },
+          "functionPackageUrl": {
+            "value": "[parameters('functionPackageUrl')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.43.8.12551",
+              "templateHash": "16161040042469783650"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure region for all resources"
+              }
+            },
+            "nameSuffix": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 8,
+              "metadata": {
+                "description": "Unique suffix for globally unique names"
+              }
+            },
+            "nodeVersion": {
+              "type": "string",
+              "defaultValue": "~22",
+              "metadata": {
+                "description": "Node.js runtime version"
+              }
+            },
+            "aoaiModelName": {
+              "type": "string",
+              "defaultValue": "gpt-5.4-mini",
+              "metadata": {
+                "description": "Azure OpenAI model name"
+              }
+            },
+            "aoaiModelVersion": {
+              "type": "string",
+              "defaultValue": "2026-03-17",
+              "metadata": {
+                "description": "Azure OpenAI model version (date string)"
+              }
+            },
+            "aoaiSkuName": {
+              "type": "string",
+              "defaultValue": "GlobalStandard",
+              "allowedValues": [
+                "GlobalStandard",
+                "Standard",
+                "ProvisionedManaged"
+              ],
+              "metadata": {
+                "description": "Azure OpenAI deployment SKU"
+              }
+            },
+            "aoaiCapacity": {
+              "type": "int",
+              "defaultValue": 50,
+              "minValue": 1,
+              "metadata": {
+                "description": "Azure OpenAI deployment capacity (thousands of TPM)"
+              }
+            },
+            "functionPackageUrl": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Public HTTPS URL of a function-app .zip package to mount via WEBSITE_RUN_FROM_PACKAGE. Leave empty to deploy code separately via deploy.ps1 / CI."
+              }
+            }
+          },
+          "variables": {
+            "cognitiveServicesUserRole": "a97b65f3-24c7-4388-baec-2e87135dc908",
+            "cognitiveServicesOpenAIUserRole": "5e0bd9bd-7b93-4f28-af87-19fc36ad61bd",
+            "eventGridDataSenderRole": "d5a91429-5739-47e2-a06b-3470a27159e7",
+            "storageBlobDataOwnerRole": "b7e6dc6d-f1e8-4753-8033-0f276bb0955b",
+            "storageQueueDataContributorRole": "974c5e8b-45b9-4653-ba55-5f855dd0fb88",
+            "storageTableDataContributorRole": "0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3",
+            "storageSubResources": [
+              "blob",
+              "queue",
+              "table",
+              "file"
+            ],
+            "packageAppSettings": "[if(empty(parameters('functionPackageUrl')), createArray(), createArray(createObject('name', 'WEBSITE_RUN_FROM_PACKAGE', 'value', parameters('functionPackageUrl'))))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2023-05-01",
+              "name": "[format('stkdl{0}', parameters('nameSuffix'))]",
+              "location": "[parameters('location')]",
+              "kind": "StorageV2",
+              "sku": {
+                "name": "Standard_LRS"
+              },
+              "properties": {
+                "supportsHttpsTrafficOnly": true,
+                "minimumTlsVersion": "TLS1_2",
+                "allowSharedKeyAccess": false,
+                "allowBlobPublicAccess": false,
+                "networkAcls": {
+                  "defaultAction": "Deny",
+                  "bypass": "AzureServices"
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Network/virtualNetworks",
+              "apiVersion": "2024-01-01",
+              "name": "[format('vnet-kdl-{0}', parameters('nameSuffix'))]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "addressSpace": {
+                  "addressPrefixes": [
+                    "10.0.0.0/16"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Network/virtualNetworks/subnets",
+              "apiVersion": "2024-01-01",
+              "name": "[format('{0}/{1}', format('vnet-kdl-{0}', parameters('nameSuffix')), 'snet-app')]",
+              "properties": {
+                "addressPrefix": "10.0.1.0/24",
+                "delegations": [
+                  {
+                    "name": "delegation-app",
+                    "properties": {
+                      "serviceName": "Microsoft.Web/serverFarms"
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', format('vnet-kdl-{0}', parameters('nameSuffix')))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Network/virtualNetworks/subnets",
+              "apiVersion": "2024-01-01",
+              "name": "[format('{0}/{1}', format('vnet-kdl-{0}', parameters('nameSuffix')), 'snet-pe')]",
+              "properties": {
+                "addressPrefix": "10.0.2.0/24",
+                "privateEndpointNetworkPolicies": "Disabled"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', format('vnet-kdl-{0}', parameters('nameSuffix')), 'snet-app')]",
+                "[resourceId('Microsoft.Network/virtualNetworks', format('vnet-kdl-{0}', parameters('nameSuffix')))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Web/serverfarms",
+              "apiVersion": "2023-12-01",
+              "name": "[format('plan-kdl-{0}', parameters('nameSuffix'))]",
+              "location": "[parameters('location')]",
+              "kind": "elastic",
+              "sku": {
+                "name": "EP1",
+                "tier": "ElasticPremium"
+              },
+              "properties": {
+                "reserved": true
+              }
+            },
+            {
+              "type": "Microsoft.Web/sites",
+              "apiVersion": "2023-12-01",
+              "name": "[format('func-kdl-{0}', parameters('nameSuffix'))]",
+              "location": "[parameters('location')]",
+              "kind": "functionapp,linux",
+              "identity": {
+                "type": "SystemAssigned"
+              },
+              "properties": {
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', format('plan-kdl-{0}', parameters('nameSuffix')))]",
+                "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', format('vnet-kdl-{0}', parameters('nameSuffix')), 'snet-app')]",
+                "httpsOnly": true,
+                "siteConfig": {
+                  "linuxFxVersion": "Node|22",
+                  "ftpsState": "Disabled",
+                  "minTlsVersion": "1.2",
+                  "cors": {
+                    "allowedOrigins": [
+                      "[format('https://func-kdl-{0}.azurewebsites.net', parameters('nameSuffix'))]"
+                    ],
+                    "supportCredentials": false
+                  },
+                  "appSettings": "[union(createArray(createObject('name', 'FUNCTIONS_EXTENSION_VERSION', 'value', '~4'), createObject('name', 'FUNCTIONS_WORKER_RUNTIME', 'value', 'node'), createObject('name', 'WEBSITE_NODE_DEFAULT_VERSION', 'value', parameters('nodeVersion')), createObject('name', 'AzureWebJobsStorage__accountName', 'value', format('stkdl{0}', parameters('nameSuffix'))), createObject('name', 'AZURE_AI_VISION_ENDPOINT', 'value', reference(resourceId('Microsoft.CognitiveServices/accounts', format('cv-kdl-{0}', parameters('nameSuffix'))), '2024-10-01').endpoint), createObject('name', 'AZURE_AI_SPEECH_ENDPOINT', 'value', reference(resourceId('Microsoft.CognitiveServices/accounts', format('speech-kdl-{0}', parameters('nameSuffix'))), '2024-10-01').endpoint), createObject('name', 'AZURE_DOC_INTELLIGENCE_ENDPOINT', 'value', reference(resourceId('Microsoft.CognitiveServices/accounts', format('di-kdl-{0}', parameters('nameSuffix'))), '2024-10-01').endpoint), createObject('name', 'AZURE_OPENAI_ENDPOINT', 'value', reference(resourceId('Microsoft.CognitiveServices/accounts', format('oai-kdl-{0}', parameters('nameSuffix'))), '2024-10-01').endpoint), createObject('name', 'AZURE_OPENAI_DEPLOYMENT', 'value', parameters('aoaiModelName')), createObject('name', 'EVENT_GRID_TOPIC_ENDPOINT', 'value', reference(resourceId('Microsoft.EventGrid/topics', format('evgt-kdl-{0}', parameters('nameSuffix'))), '2024-06-01-preview').endpoint), createObject('name', 'WEBSITE_CONTENTOVERVNET', 'value', '1'), createObject('name', 'WEBSITE_VNET_ROUTE_ALL', 'value', '1'), createObject('name', 'SCM_DO_BUILD_DURING_DEPLOYMENT', 'value', 'true')), variables('packageAppSettings'))]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.CognitiveServices/accounts', format('di-kdl-{0}', parameters('nameSuffix')))]",
+                "[resourceId('Microsoft.EventGrid/topics', format('evgt-kdl-{0}', parameters('nameSuffix')))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts/deployments', format('oai-kdl-{0}', parameters('nameSuffix')), parameters('aoaiModelName'))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts', format('oai-kdl-{0}', parameters('nameSuffix')))]",
+                "[resourceId('Microsoft.Web/serverfarms', format('plan-kdl-{0}', parameters('nameSuffix')))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts', format('speech-kdl-{0}', parameters('nameSuffix')))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', format('stkdl{0}', parameters('nameSuffix')))]",
+                "storagePeDnsGroups",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', format('vnet-kdl-{0}', parameters('nameSuffix')), 'snet-app')]",
+                "[resourceId('Microsoft.CognitiveServices/accounts', format('cv-kdl-{0}', parameters('nameSuffix')))]"
+              ]
+            },
+            {
+              "type": "Microsoft.CognitiveServices/accounts",
+              "apiVersion": "2024-10-01",
+              "name": "[format('cv-kdl-{0}', parameters('nameSuffix'))]",
+              "location": "[parameters('location')]",
+              "kind": "ComputerVision",
+              "sku": {
+                "name": "S1"
+              },
+              "identity": {
+                "type": "SystemAssigned"
+              },
+              "properties": {
+                "customSubDomainName": "[format('cv-kdl-{0}', parameters('nameSuffix'))]",
+                "disableLocalAuth": true,
+                "publicNetworkAccess": "Enabled"
+              }
+            },
+            {
+              "type": "Microsoft.CognitiveServices/accounts",
+              "apiVersion": "2024-10-01",
+              "name": "[format('di-kdl-{0}', parameters('nameSuffix'))]",
+              "location": "[parameters('location')]",
+              "kind": "FormRecognizer",
+              "sku": {
+                "name": "S0"
+              },
+              "identity": {
+                "type": "SystemAssigned"
+              },
+              "properties": {
+                "customSubDomainName": "[format('di-kdl-{0}', parameters('nameSuffix'))]",
+                "disableLocalAuth": true,
+                "publicNetworkAccess": "Enabled"
+              }
+            },
+            {
+              "type": "Microsoft.CognitiveServices/accounts",
+              "apiVersion": "2024-10-01",
+              "name": "[format('speech-kdl-{0}', parameters('nameSuffix'))]",
+              "location": "[parameters('location')]",
+              "kind": "SpeechServices",
+              "sku": {
+                "name": "S0"
+              },
+              "identity": {
+                "type": "SystemAssigned"
+              },
+              "properties": {
+                "customSubDomainName": "[format('speech-kdl-{0}', parameters('nameSuffix'))]",
+                "disableLocalAuth": true,
+                "publicNetworkAccess": "Enabled"
+              }
+            },
+            {
+              "type": "Microsoft.CognitiveServices/accounts",
+              "apiVersion": "2024-10-01",
+              "name": "[format('oai-kdl-{0}', parameters('nameSuffix'))]",
+              "location": "[parameters('location')]",
+              "kind": "OpenAI",
+              "sku": {
+                "name": "S0"
+              },
+              "identity": {
+                "type": "SystemAssigned"
+              },
+              "properties": {
+                "customSubDomainName": "[format('oai-kdl-{0}', parameters('nameSuffix'))]",
+                "disableLocalAuth": true,
+                "publicNetworkAccess": "Enabled"
+              }
+            },
+            {
+              "type": "Microsoft.CognitiveServices/accounts/deployments",
+              "apiVersion": "2024-10-01",
+              "name": "[format('{0}/{1}', format('oai-kdl-{0}', parameters('nameSuffix')), parameters('aoaiModelName'))]",
+              "sku": {
+                "name": "[parameters('aoaiSkuName')]",
+                "capacity": "[parameters('aoaiCapacity')]"
+              },
+              "properties": {
+                "model": {
+                  "format": "OpenAI",
+                  "name": "[parameters('aoaiModelName')]",
+                  "version": "[parameters('aoaiModelVersion')]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.CognitiveServices/accounts', format('oai-kdl-{0}', parameters('nameSuffix')))]"
+              ]
+            },
+            {
+              "type": "Microsoft.EventGrid/topics",
+              "apiVersion": "2024-06-01-preview",
+              "name": "[format('evgt-kdl-{0}', parameters('nameSuffix'))]",
+              "location": "[parameters('location')]",
+              "identity": {
+                "type": "SystemAssigned"
+              },
+              "properties": {
+                "inputSchema": "EventGridSchema",
+                "disableLocalAuth": true,
+                "publicNetworkAccess": "Enabled"
+              }
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[resourceId('Microsoft.CognitiveServices/accounts', format('cv-kdl-{0}', parameters('nameSuffix')))]",
+              "name": "[guid(resourceId('Microsoft.CognitiveServices/accounts', format('cv-kdl-{0}', parameters('nameSuffix'))), resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix'))), variables('cognitiveServicesUserRole'))]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('cognitiveServicesUserRole'))]",
+                "principalId": "[reference(resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix'))), '2023-12-01', 'full').identity.principalId]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix')))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts', format('cv-kdl-{0}', parameters('nameSuffix')))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[resourceId('Microsoft.CognitiveServices/accounts', format('di-kdl-{0}', parameters('nameSuffix')))]",
+              "name": "[guid(resourceId('Microsoft.CognitiveServices/accounts', format('di-kdl-{0}', parameters('nameSuffix'))), resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix'))), variables('cognitiveServicesUserRole'))]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('cognitiveServicesUserRole'))]",
+                "principalId": "[reference(resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix'))), '2023-12-01', 'full').identity.principalId]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.CognitiveServices/accounts', format('di-kdl-{0}', parameters('nameSuffix')))]",
+                "[resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix')))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[resourceId('Microsoft.CognitiveServices/accounts', format('speech-kdl-{0}', parameters('nameSuffix')))]",
+              "name": "[guid(resourceId('Microsoft.CognitiveServices/accounts', format('speech-kdl-{0}', parameters('nameSuffix'))), resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix'))), variables('cognitiveServicesUserRole'))]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('cognitiveServicesUserRole'))]",
+                "principalId": "[reference(resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix'))), '2023-12-01', 'full').identity.principalId]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix')))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts', format('speech-kdl-{0}', parameters('nameSuffix')))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[resourceId('Microsoft.CognitiveServices/accounts', format('oai-kdl-{0}', parameters('nameSuffix')))]",
+              "name": "[guid(resourceId('Microsoft.CognitiveServices/accounts', format('oai-kdl-{0}', parameters('nameSuffix'))), resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix'))), variables('cognitiveServicesOpenAIUserRole'))]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('cognitiveServicesOpenAIUserRole'))]",
+                "principalId": "[reference(resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix'))), '2023-12-01', 'full').identity.principalId]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix')))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts', format('oai-kdl-{0}', parameters('nameSuffix')))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[resourceId('Microsoft.EventGrid/topics', format('evgt-kdl-{0}', parameters('nameSuffix')))]",
+              "name": "[guid(resourceId('Microsoft.EventGrid/topics', format('evgt-kdl-{0}', parameters('nameSuffix'))), resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix'))), variables('eventGridDataSenderRole'))]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('eventGridDataSenderRole'))]",
+                "principalId": "[reference(resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix'))), '2023-12-01', 'full').identity.principalId]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.EventGrid/topics', format('evgt-kdl-{0}', parameters('nameSuffix')))]",
+                "[resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix')))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[resourceId('Microsoft.Storage/storageAccounts', format('stkdl{0}', parameters('nameSuffix')))]",
+              "name": "[guid(resourceId('Microsoft.Storage/storageAccounts', format('stkdl{0}', parameters('nameSuffix'))), resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix'))), variables('storageBlobDataOwnerRole'))]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('storageBlobDataOwnerRole'))]",
+                "principalId": "[reference(resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix'))), '2023-12-01', 'full').identity.principalId]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix')))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', format('stkdl{0}', parameters('nameSuffix')))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[resourceId('Microsoft.Storage/storageAccounts', format('stkdl{0}', parameters('nameSuffix')))]",
+              "name": "[guid(resourceId('Microsoft.Storage/storageAccounts', format('stkdl{0}', parameters('nameSuffix'))), resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix'))), variables('storageQueueDataContributorRole'))]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('storageQueueDataContributorRole'))]",
+                "principalId": "[reference(resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix'))), '2023-12-01', 'full').identity.principalId]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix')))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', format('stkdl{0}', parameters('nameSuffix')))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[resourceId('Microsoft.Storage/storageAccounts', format('stkdl{0}', parameters('nameSuffix')))]",
+              "name": "[guid(resourceId('Microsoft.Storage/storageAccounts', format('stkdl{0}', parameters('nameSuffix'))), resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix'))), variables('storageTableDataContributorRole'))]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('storageTableDataContributorRole'))]",
+                "principalId": "[reference(resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix'))), '2023-12-01', 'full').identity.principalId]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix')))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', format('stkdl{0}', parameters('nameSuffix')))]"
+              ]
+            },
+            {
+              "copy": {
+                "name": "storageDnsZones",
+                "count": "[length(variables('storageSubResources'))]"
+              },
+              "type": "Microsoft.Network/privateDnsZones",
+              "apiVersion": "2020-06-01",
+              "name": "[format('privatelink.{0}.core.windows.net', variables('storageSubResources')[copyIndex()])]",
+              "location": "global"
+            },
+            {
+              "copy": {
+                "name": "storageDnsZoneLinks",
+                "count": "[length(variables('storageSubResources'))]"
+              },
+              "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+              "apiVersion": "2020-06-01",
+              "name": "[format('{0}/{1}', format('privatelink.{0}.core.windows.net', variables('storageSubResources')[copyIndex()]), format('link-{0}', variables('storageSubResources')[copyIndex()]))]",
+              "location": "global",
+              "properties": {
+                "virtualNetwork": {
+                  "id": "[resourceId('Microsoft.Network/virtualNetworks', format('vnet-kdl-{0}', parameters('nameSuffix')))]"
+                },
+                "registrationEnabled": false
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/privateDnsZones', format('privatelink.{0}.core.windows.net', variables('storageSubResources')[copyIndex()]))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', format('vnet-kdl-{0}', parameters('nameSuffix')))]"
+              ]
+            },
+            {
+              "copy": {
+                "name": "storagePe",
+                "count": "[length(variables('storageSubResources'))]"
+              },
+              "type": "Microsoft.Network/privateEndpoints",
+              "apiVersion": "2024-01-01",
+              "name": "[format('pe-{0}-kdl-{1}', variables('storageSubResources')[copyIndex()], parameters('nameSuffix'))]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "subnet": {
+                  "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', format('vnet-kdl-{0}', parameters('nameSuffix')), 'snet-pe')]"
+                },
+                "privateLinkServiceConnections": [
+                  {
+                    "name": "[variables('storageSubResources')[copyIndex()]]",
+                    "properties": {
+                      "privateLinkServiceId": "[resourceId('Microsoft.Storage/storageAccounts', format('stkdl{0}', parameters('nameSuffix')))]",
+                      "groupIds": [
+                        "[variables('storageSubResources')[copyIndex()]]"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', format('stkdl{0}', parameters('nameSuffix')))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', format('vnet-kdl-{0}', parameters('nameSuffix')), 'snet-pe')]"
+              ]
+            },
+            {
+              "copy": {
+                "name": "storagePeDnsGroups",
+                "count": "[length(variables('storageSubResources'))]"
+              },
+              "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+              "apiVersion": "2024-01-01",
+              "name": "[format('{0}/{1}', format('pe-{0}-kdl-{1}', variables('storageSubResources')[copyIndex()], parameters('nameSuffix')), 'default')]",
+              "properties": {
+                "privateDnsZoneConfigs": [
+                  {
+                    "name": "[variables('storageSubResources')[copyIndex()]]",
+                    "properties": {
+                      "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', format('privatelink.{0}.core.windows.net', variables('storageSubResources')[copyIndex()]))]"
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/privateDnsZones', format('privatelink.{0}.core.windows.net', variables('storageSubResources')[copyIndex()]))]",
+                "[resourceId('Microsoft.Network/privateEndpoints', format('pe-{0}-kdl-{1}', variables('storageSubResources')[copyIndex()], parameters('nameSuffix')))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "functionAppName": {
+              "type": "string",
+              "value": "[format('func-kdl-{0}', parameters('nameSuffix'))]"
+            },
+            "functionAppUrl": {
+              "type": "string",
+              "value": "[format('https://{0}', reference(resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix'))), '2023-12-01').defaultHostName)]"
+            },
+            "visionEndpoint": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.CognitiveServices/accounts', format('cv-kdl-{0}', parameters('nameSuffix'))), '2024-10-01').endpoint]"
+            },
+            "speechEndpoint": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.CognitiveServices/accounts', format('speech-kdl-{0}', parameters('nameSuffix'))), '2024-10-01').endpoint]"
+            },
+            "docIntelligenceEndpoint": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.CognitiveServices/accounts', format('di-kdl-{0}', parameters('nameSuffix'))), '2024-10-01').endpoint]"
+            },
+            "openaiEndpoint": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.CognitiveServices/accounts', format('oai-kdl-{0}', parameters('nameSuffix'))), '2024-10-01').endpoint]"
+            },
+            "eventGridTopicEndpoint": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.EventGrid/topics', format('evgt-kdl-{0}', parameters('nameSuffix'))), '2024-06-01-preview').endpoint]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "value": "[parameters('resourceGroupName')]"
+    },
+    "functionAppName": {
+      "type": "string",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('core-{0}', parameters('nameSuffix'))), '2025-04-01').outputs.functionAppName.value]"
+    },
+    "functionAppUrl": {
+      "type": "string",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('core-{0}', parameters('nameSuffix'))), '2025-04-01').outputs.functionAppUrl.value]"
+    },
+    "visionEndpoint": {
+      "type": "string",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('core-{0}', parameters('nameSuffix'))), '2025-04-01').outputs.visionEndpoint.value]"
+    },
+    "speechEndpoint": {
+      "type": "string",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('core-{0}', parameters('nameSuffix'))), '2025-04-01').outputs.speechEndpoint.value]"
+    },
+    "docIntelligenceEndpoint": {
+      "type": "string",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('core-{0}', parameters('nameSuffix'))), '2025-04-01').outputs.docIntelligenceEndpoint.value]"
+    },
+    "openaiEndpoint": {
+      "type": "string",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('core-{0}', parameters('nameSuffix'))), '2025-04-01').outputs.openaiEndpoint.value]"
+    },
+    "eventGridTopicEndpoint": {
+      "type": "string",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('core-{0}', parameters('nameSuffix'))), '2025-04-01').outputs.eventGridTopicEndpoint.value]"
+    }
+  }
+}

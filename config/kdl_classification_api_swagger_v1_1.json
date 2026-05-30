@@ -1,0 +1,279 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "KDL-Klassifizierungs-API",
+    "description": "Swagger 2.0 / OpenAPI 2.0 specification for the DVMD Klinische Dokumentenklassen (KDL) classification API. This revised version is aligned to the provided sample response structure.",
+    "version": "1.1.0"
+  },
+  "host": "func-kdl-kdl01.azurewebsites.net",
+  "basePath": "/",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "api_key_query": {
+      "type": "apiKey",
+      "name": "code",
+      "in": "query",
+      "description": "Azure Function key passed as query parameter 'code'."
+    }
+  },
+  "security": [
+    {
+      "api_key_query": []
+    }
+  ],
+  "paths": {
+    "/api/classify": {
+      "post": {
+        "summary": "Classify document pages/files into DVMD KDL classes",
+        "description": "Accepts a base64-encoded file and returns one classification result per page (or per file, depending on input type).",
+        "operationId": "ClassifyKdlDocument",
+        "parameters": [
+          {
+            "name": "languageHint",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "default": "de",
+            "description": "Optional language hint, e.g. de."
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ClassifyRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Classification response",
+            "schema": {
+              "$ref": "#/definitions/KdlClassificationResponse"
+            },
+            "examples": {
+              "application/json": {
+                "classifications": [
+                  {
+                    "page": 1,
+                    "code": "AD010110",
+                    "display": "Ärztlicher Verlaufsbericht",
+                    "classId": "AD",
+                    "confidence": 0.95,
+                    "reasoning": "Die Seite enthält eine chronologische Darstellung des Krankheitsverlaufs und der durchgeführten Maßnahmen aus ärztlicher Sicht.",
+                    "verified": true,
+                    "verificationMethod": "dual-call-agree",
+                    "cached": false
+                  },
+                  {
+                    "page": 3,
+                    "code": "AD010104",
+                    "display": "Entlassungsbericht extern",
+                    "classId": "AD",
+                    "confidence": 0.77,
+                    "reasoning": "Die Seite fasst den stationären Aufenthalt zusammen, einschließlich Diagnosen, Therapie und Entlassung.",
+                    "verified": false,
+                    "verificationMethod": "dual-call-disagree",
+                    "disagreement": {
+                      "contextAware": {
+                        "code": "AD010104",
+                        "display": "Entlassungsbericht extern",
+                        "confidence": 0.9,
+                        "reasoning": "Die Seite fasst den stationären Aufenthalt zusammen, einschließlich Diagnosen, Therapie und Entlassung."
+                      },
+                      "independent": {
+                        "code": "AD010103",
+                        "display": "Entlassungsbericht intern",
+                        "confidence": 0.9,
+                        "reasoning": "Das Dokument beinhaltet die endgültige Zusammenfassung des stationären Aufenthaltes durch die entlassende Einrichtung."
+                      }
+                    },
+                    "cached": false
+                  }
+                ],
+                "codeSystem": {
+                  "url": "http://dvmd.de/fhir/CodeSystem/kdl",
+                  "version": "2025",
+                  "title": "CodeSystem Klinische Dokumentenklassen-Liste (Version 2025)",
+                  "date": "2025-01-01",
+                  "publisher": "Der Fachverband für Dokumentation und Informationsmanagement in der Medizin (DVMD)",
+                  "codeCount": 480,
+                  "lastFetched": "2026-04-30T17:14:43.417Z"
+                },
+                "inputType": "pdf"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Unauthorized / invalid code"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        },
+        "tags": [
+          "KDL"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "ClassifyRequest": {
+      "type": "object",
+      "required": [
+        "file",
+        "fileContentType"
+      ],
+      "properties": {
+        "file": {
+          "type": "string",
+          "description": "Base64-encoded file content without data URL prefix."
+        },
+        "fileContentType": {
+          "type": "string",
+          "description": "MIME type of the file.",
+          "enum": [
+            "application/pdf",
+            "image/jpeg",
+            "image/png",
+            "image/tiff",
+            "audio/wav",
+            "audio/mpeg"
+          ]
+        },
+        "fileName": {
+          "type": "string",
+          "description": "Optional file name for flow readability."
+        }
+      }
+    },
+    "KdlClassificationResponse": {
+      "type": "object",
+      "properties": {
+        "classifications": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ClassificationEntry"
+          }
+        },
+        "codeSystem": {
+          "$ref": "#/definitions/CodeSystemInfo"
+        },
+        "inputType": {
+          "type": "string",
+          "description": "Detected input type, e.g. pdf, image, wav, mp3."
+        }
+      }
+    },
+    "ClassificationEntry": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "code": {
+          "type": "string"
+        },
+        "display": {
+          "type": "string"
+        },
+        "classId": {
+          "type": "string"
+        },
+        "confidence": {
+          "type": "number",
+          "format": "double"
+        },
+        "reasoning": {
+          "type": "string"
+        },
+        "verified": {
+          "type": "boolean"
+        },
+        "verificationMethod": {
+          "type": "string",
+          "enum": [
+            "dual-call-agree",
+            "dual-call-disagree"
+          ]
+        },
+        "disagreement": {
+          "$ref": "#/definitions/Disagreement"
+        },
+        "cached": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Disagreement": {
+      "type": "object",
+      "properties": {
+        "contextAware": {
+          "$ref": "#/definitions/VoteResult"
+        },
+        "independent": {
+          "$ref": "#/definitions/VoteResult"
+        }
+      }
+    },
+    "VoteResult": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "display": {
+          "type": "string"
+        },
+        "confidence": {
+          "type": "number",
+          "format": "double"
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      }
+    },
+    "CodeSystemInfo": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "publisher": {
+          "type": "string"
+        },
+        "codeCount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "lastFetched": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

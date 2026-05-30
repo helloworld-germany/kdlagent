@@ -1,0 +1,10 @@
+node_modules/
+local.settings.json
+.env
+deploy.zip
+.kdl-cache/
+kdl-package.tgz
+package/
+wwwroot-check/
+wwwroot.zip
+TODO.md

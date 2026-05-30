@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vidaugment/schemas/kdl-classified-event.schema.json",
+  "title": "KDL Classified Event Data",
+  "description": "Payload for vidaugment.kdl.classified Event Grid events",
+  "type": "object",
+  "required": ["masterSessionId", "classification", "momentCount", "classifiedAt"],
+  "properties": {
+    "masterSessionId": { "type": "string" },
+    "sessionId": { "type": ["string", "null"] },
+    "chunkIndex": { "type": ["integer", "null"] },
+    "classification": {
+      "type": "object",
+      "required": ["classifications", "codeSystem"],
+      "properties": {
+        "classifications": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["page", "code", "display", "classId", "confidence", "verified"],
+            "properties": {
+              "page": { "type": "integer" },
+              "code": { "type": "string" },
+              "display": { "type": "string" },
+              "classId": { "type": "string" },
+              "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+              "reasoning": { "type": "string" },
+              "verified": { "type": "boolean" },
+              "verificationMethod": { "type": "string", "enum": ["dual-call-agree", "dual-call-disagree", "independent-only", "context-only", "none"] },
+              "disagreement": {
+                "type": "object",
+                "properties": {
+                  "contextAware": {
+                    "type": "object",
+                    "properties": {
+                      "code": { "type": "string" },
+                      "display": { "type": "string" },
+                      "confidence": { "type": "number" },
+                      "reasoning": { "type": "string" }
+                    }
+                  },
+                  "independent": {
+                    "type": "object",
+                    "properties": {
+                      "code": { "type": "string" },
+                      "display": { "type": "string" },
+                      "confidence": { "type": "number" },
+                      "reasoning": { "type": "string" }
+                    }
+                  }
+                }
+              },
+              "cached": { "type": "boolean" }
+            }
+          }
+        },
+        "codeSystem": {
+          "type": "object",
+          "properties": {
+            "url": { "type": "string" },
+            "version": { "type": "string" },
+            "title": { "type": "string" },
+            "date": { "type": "string" },
+            "publisher": { "type": "string" },
+            "codeCount": { "type": "integer" },
+            "lastFetched": { "type": "string" }
+          }
+        }
+      }
+    },
+    "momentCount": { "type": "integer", "minimum": 0 },
+    "classifiedAt": { "type": "string" }
+  }
+}
