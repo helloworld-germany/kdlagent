@@ -75,6 +75,50 @@ try {
   Pop-Location
 }
 
+# ── 3. Configure debug console authentication ───────────────────────────────
+
+Write-Host "`n=== Configuring debug console authentication ===" -ForegroundColor Cyan
+
+az functionapp function keys set `
+  --resource-group $ResourceGroupName `
+  --name $funcAppName `
+  --function-name classify `
+  --key-name debug-console `
+  --output none
+
+if ($LASTEXITCODE -ne 0) {
+  Write-Error "Failed to create the classify function key."
+  exit 1
+}
+
+$functionKeysJson = az functionapp function keys list `
+  --resource-group $ResourceGroupName `
+  --name $funcAppName `
+  --function-name classify `
+  --output json
+
+if ($LASTEXITCODE -ne 0) {
+  Write-Error "Failed to retrieve the classify function key."
+  exit 1
+}
+
+$classifyKey = ($functionKeysJson | ConvertFrom-Json).'debug-console'
+if ([string]::IsNullOrWhiteSpace($classifyKey)) {
+  Write-Error "The classify function key was not returned by Azure."
+  exit 1
+}
+
+az functionapp config appsettings set `
+  --resource-group $ResourceGroupName `
+  --name $funcAppName `
+  --settings "CLASSIFY_FUNCTION_KEY=$classifyKey" `
+  --output none
+
+if ($LASTEXITCODE -ne 0) {
+  Write-Error "Failed to configure the classify function key."
+  exit 1
+}
+
 Write-Host "`n=== Done ===" -ForegroundColor Green
 Write-Host "Function App: https://$funcAppName.azurewebsites.net"
 Write-Host "Debug page:   https://$funcAppName.azurewebsites.net/api/debug"

@@ -22,7 +22,7 @@ jobs:
 
       - name: Install Bicep CLI
         run: |
-          BICEP_VERSION=v0.43.8
+          BICEP_VERSION=v0.47.16
           curl -sLo bicep https://github.com/Azure/bicep/releases/download/${BICEP_VERSION}/bicep-linux-x64
           chmod +x bicep
           sudo mv bicep /usr/local/bin/bicep

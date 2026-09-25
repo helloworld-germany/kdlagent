@@ -43,6 +43,10 @@ param aoaiCapacity int = 50
 @description('Optional public HTTPS URL of a Function App .zip package. When set, the app runs directly from this package (no separate code deploy needed).')
 param functionPackageUrl string = ''
 
+@secure()
+@description('Function-scoped key used by the anonymous debug console to call the protected classify endpoint.')
+param classifyFunctionKey string = newGuid()
+
 // ── Resource Group ──────────────────────────────────────────────────────────
 
 resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = {
@@ -64,6 +68,7 @@ module core 'modules/core.bicep' = {
     aoaiSkuName: aoaiSkuName
     aoaiCapacity: aoaiCapacity
     functionPackageUrl: functionPackageUrl
+    classifyFunctionKey: classifyFunctionKey
   }
 }
 

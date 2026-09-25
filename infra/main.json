@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.8.12551",
-      "templateHash": "16032407027141901176"
+      "version": "0.47.16.16243",
+      "templateHash": "325529511142027809"
     }
   },
   "parameters": {
@@ -76,6 +76,13 @@
       "metadata": {
         "description": "Optional public HTTPS URL of a Function App .zip package. When set, the app runs directly from this package (no separate code deploy needed)."
       }
+    },
+    "classifyFunctionKey": {
+      "type": "securestring",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "Function-scoped key used by the anonymous debug console to call the protected classify endpoint."
+      }
     }
   },
   "resources": [
@@ -119,6 +126,9 @@
           },
           "functionPackageUrl": {
             "value": "[parameters('functionPackageUrl')]"
+          },
+          "classifyFunctionKey": {
+            "value": "[parameters('classifyFunctionKey')]"
           }
         },
         "template": {
@@ -127,8 +137,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "16161040042469783650"
+              "version": "0.47.16.16243",
+              "templateHash": "442590276127565135"
             }
           },
           "parameters": {
@@ -192,6 +202,12 @@
               "defaultValue": "",
               "metadata": {
                 "description": "Public HTTPS URL of a function-app .zip package to mount via WEBSITE_RUN_FROM_PACKAGE. Leave empty to deploy code separately via deploy.ps1 / CI."
+              }
+            },
+            "classifyFunctionKey": {
+              "type": "securestring",
+              "metadata": {
+                "description": "Function-scoped key used by the anonymous debug console to call the protected classify endpoint."
               }
             }
           },
@@ -313,7 +329,7 @@
                     ],
                     "supportCredentials": false
                   },
-                  "appSettings": "[union(createArray(createObject('name', 'FUNCTIONS_EXTENSION_VERSION', 'value', '~4'), createObject('name', 'FUNCTIONS_WORKER_RUNTIME', 'value', 'node'), createObject('name', 'WEBSITE_NODE_DEFAULT_VERSION', 'value', parameters('nodeVersion')), createObject('name', 'AzureWebJobsStorage__accountName', 'value', format('stkdl{0}', parameters('nameSuffix'))), createObject('name', 'AZURE_AI_VISION_ENDPOINT', 'value', reference(resourceId('Microsoft.CognitiveServices/accounts', format('cv-kdl-{0}', parameters('nameSuffix'))), '2024-10-01').endpoint), createObject('name', 'AZURE_AI_SPEECH_ENDPOINT', 'value', reference(resourceId('Microsoft.CognitiveServices/accounts', format('speech-kdl-{0}', parameters('nameSuffix'))), '2024-10-01').endpoint), createObject('name', 'AZURE_DOC_INTELLIGENCE_ENDPOINT', 'value', reference(resourceId('Microsoft.CognitiveServices/accounts', format('di-kdl-{0}', parameters('nameSuffix'))), '2024-10-01').endpoint), createObject('name', 'AZURE_OPENAI_ENDPOINT', 'value', reference(resourceId('Microsoft.CognitiveServices/accounts', format('oai-kdl-{0}', parameters('nameSuffix'))), '2024-10-01').endpoint), createObject('name', 'AZURE_OPENAI_DEPLOYMENT', 'value', parameters('aoaiModelName')), createObject('name', 'EVENT_GRID_TOPIC_ENDPOINT', 'value', reference(resourceId('Microsoft.EventGrid/topics', format('evgt-kdl-{0}', parameters('nameSuffix'))), '2024-06-01-preview').endpoint), createObject('name', 'WEBSITE_CONTENTOVERVNET', 'value', '1'), createObject('name', 'WEBSITE_VNET_ROUTE_ALL', 'value', '1'), createObject('name', 'SCM_DO_BUILD_DURING_DEPLOYMENT', 'value', 'true')), variables('packageAppSettings'))]"
+                  "appSettings": "[union(createArray(createObject('name', 'FUNCTIONS_EXTENSION_VERSION', 'value', '~4'), createObject('name', 'FUNCTIONS_WORKER_RUNTIME', 'value', 'node'), createObject('name', 'WEBSITE_NODE_DEFAULT_VERSION', 'value', parameters('nodeVersion')), createObject('name', 'AzureWebJobsStorage__accountName', 'value', format('stkdl{0}', parameters('nameSuffix'))), createObject('name', 'AZURE_AI_VISION_ENDPOINT', 'value', reference(resourceId('Microsoft.CognitiveServices/accounts', format('cv-kdl-{0}', parameters('nameSuffix'))), '2024-10-01').endpoint), createObject('name', 'AZURE_AI_SPEECH_ENDPOINT', 'value', reference(resourceId('Microsoft.CognitiveServices/accounts', format('speech-kdl-{0}', parameters('nameSuffix'))), '2024-10-01').endpoint), createObject('name', 'AZURE_DOC_INTELLIGENCE_ENDPOINT', 'value', reference(resourceId('Microsoft.CognitiveServices/accounts', format('di-kdl-{0}', parameters('nameSuffix'))), '2024-10-01').endpoint), createObject('name', 'AZURE_OPENAI_ENDPOINT', 'value', reference(resourceId('Microsoft.CognitiveServices/accounts', format('oai-kdl-{0}', parameters('nameSuffix'))), '2024-10-01').endpoint), createObject('name', 'AZURE_OPENAI_DEPLOYMENT', 'value', parameters('aoaiModelName')), createObject('name', 'EVENT_GRID_TOPIC_ENDPOINT', 'value', reference(resourceId('Microsoft.EventGrid/topics', format('evgt-kdl-{0}', parameters('nameSuffix'))), '2024-06-01-preview').endpoint), createObject('name', 'CLASSIFY_FUNCTION_KEY', 'value', parameters('classifyFunctionKey')), createObject('name', 'WEBSITE_CONTENTOVERVNET', 'value', '1'), createObject('name', 'WEBSITE_VNET_ROUTE_ALL', 'value', '1'), createObject('name', 'SCM_DO_BUILD_DURING_DEPLOYMENT', 'value', 'true')), variables('packageAppSettings'))]"
                 }
               },
               "dependsOn": [
@@ -327,6 +343,16 @@
                 "storagePeDnsGroups",
                 "[resourceId('Microsoft.Network/virtualNetworks/subnets', format('vnet-kdl-{0}', parameters('nameSuffix')), 'snet-app')]",
                 "[resourceId('Microsoft.CognitiveServices/accounts', format('cv-kdl-{0}', parameters('nameSuffix')))]"
+              ]
+            },
+            {
+              "condition": "[not(empty(parameters('functionPackageUrl')))]",
+              "type": "Microsoft.Web/sites/functions/keys",
+              "apiVersion": "2024-11-01",
+              "name": "[format('{0}/{1}/{2}', format('func-kdl-{0}', parameters('nameSuffix')), 'classify', 'debug-console')]",
+              "value": "[parameters('classifyFunctionKey')]",
+              "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix')))]"
               ]
             },
             {

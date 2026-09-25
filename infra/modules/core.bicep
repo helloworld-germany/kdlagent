@@ -1,5 +1,5 @@
 // Core infrastructure for kdl-classifier
-// All auth via managed identity + RBAC — no keys anywhere
+// Service-to-service auth uses managed identity + RBAC.
 
 @description('Azure region for all resources')
 param location string
@@ -29,6 +29,10 @@ param aoaiCapacity int = 50
 
 @description('Public HTTPS URL of a function-app .zip package to mount via WEBSITE_RUN_FROM_PACKAGE. Leave empty to deploy code separately via deploy.ps1 / CI.')
 param functionPackageUrl string = ''
+
+@secure()
+@description('Function-scoped key used by the anonymous debug console to call the protected classify endpoint.')
+param classifyFunctionKey string
 
 // Built-in role definition IDs
 var cognitiveServicesUserRole = 'a97b65f3-24c7-4388-baec-2e87135dc908'
@@ -130,6 +134,8 @@ var baseAppSettings = [
   { name: 'AZURE_OPENAI_DEPLOYMENT', value: gptDeployment.name }
   // Event Grid
   { name: 'EVENT_GRID_TOPIC_ENDPOINT', value: eventGridTopic.properties.endpoint }
+  // Function-scoped key injected into the debug console
+  { name: 'CLASSIFY_FUNCTION_KEY', value: classifyFunctionKey }
   // VNet integration
   { name: 'WEBSITE_CONTENTOVERVNET', value: '1' }
   { name: 'WEBSITE_VNET_ROUTE_ALL', value: '1' }
@@ -166,6 +172,17 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
     }
   }
   dependsOn: [storagePeDnsGroups]
+}
+
+resource classifyFunction 'Microsoft.Web/sites/functions@2024-11-01' existing = {
+  parent: functionApp
+  name: 'classify'
+}
+
+resource classifyDebugKey 'Microsoft.Web/sites/functions/keys@2024-11-01' = if (!empty(functionPackageUrl)) {
+  parent: classifyFunction
+  name: 'debug-console'
+  value: classifyFunctionKey
 }
 
 // ── Azure AI Vision (Computer Vision) ───────────────────────────────────────

@@ -244,12 +244,27 @@
         }
 
         const elapsed = ((performance.now() - t0) / 1000).toFixed(2);
-        const data = await res.json();
+        const responseText = await res.text();
+        let data = {};
+        if (responseText) {
+          try {
+            data = JSON.parse(responseText);
+          } catch {
+            if (res.ok) {
+              throw new Error('Server returned an invalid JSON response.');
+            }
+          }
+        }
 
         if (!res.ok) {
-          resultArea.innerHTML = `<div class="error-msg">HTTP ${res.status}: ${esc(data.error || JSON.stringify(data))}</div>`;
+          const detail = data.error || responseText || res.statusText || 'Request failed.';
+          resultArea.innerHTML = `<div class="error-msg">HTTP ${res.status}: ${esc(detail)}</div>`;
           statusBar.textContent = `${elapsed}s`;
           return;
+        }
+
+        if (!responseText) {
+          throw new Error('Server returned an empty response.');
         }
 
         renderResult(data, elapsed);

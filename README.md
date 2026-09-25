@@ -32,11 +32,13 @@ Azure **Function App** zur Klassifikation klinischer Dokumente (Text, PDFs, Bild
 5. **Code-Tab**: Package-URL stehen lassen (= GitHub-Release-ZIP) oder leeren, um den Code später per `deploy.ps1 -SkipInfra` zu publishen.
 6. *Review + create*. Deployment-Dauer: ~10-15 Min.
 
+Der Wizard erzeugt den geschützten `classify`-Function-Key und verdrahtet ihn automatisch mit der anonym erreichbaren Debug-Konsole. Es ist kein manueller Konfigurationsschritt erforderlich.
+
 ### Nach dem Deployment
 
 ```powershell
 # Function Key abrufen
-az functionapp function keys list -g <RG> -n func-kdl-<suffix> --function-name classify --query default -o tsv
+az functionapp function keys list -g <RG> -n func-kdl-<suffix> --function-name classify --query '"debug-console"' -o tsv
 
 # Smoke-Test
 curl -X POST "https://func-kdl-<suffix>.azurewebsites.net/api/classify?code=<KEY>" `
