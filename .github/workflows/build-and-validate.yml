@@ -5,10 +5,15 @@ on:
     branches: [main]
     paths:
       - 'infra/**'
+      - 'tests/infra.test.js'
+      - 'package.json'
       - '.github/workflows/build-and-validate.yml'
   pull_request:
     paths:
       - 'infra/**'
+      - 'tests/infra.test.js'
+      - 'package.json'
+      - '.github/workflows/build-and-validate.yml'
 
 permissions:
   contents: read
@@ -19,6 +24,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
 
       - name: Install Bicep CLI
         run: |
@@ -33,6 +42,9 @@ jobs:
 
       - name: Build main.json
         run: bicep build infra/main.bicep --outfile infra/main.json
+
+      - name: Validate ARM resource structure
+        run: npm test
 
       - name: Fail if main.json out of sync with main.bicep
         run: |

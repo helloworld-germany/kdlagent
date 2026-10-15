@@ -1,11 +1,11 @@
 {
   "name": "kdl-classifier",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "type": "module",
   "scripts": {
     "start": "func start",
     "build": "echo 'Azure Functions build (noop)'",
-    "test": "echo 'No tests yet'"
+    "test": "node --test"
   },
   "dependencies": {
     "@azure/identity": "^4.5.0",

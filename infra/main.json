@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "325529511142027809"
+      "templateHash": "18232092739274830529"
     }
   },
   "parameters": {
@@ -138,7 +138,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "442590276127565135"
+              "templateHash": "4924466078367317075"
             }
           },
           "parameters": {
@@ -350,7 +350,10 @@
               "type": "Microsoft.Web/sites/functions/keys",
               "apiVersion": "2024-11-01",
               "name": "[format('{0}/{1}/{2}', format('func-kdl-{0}', parameters('nameSuffix')), 'classify', 'debug-console')]",
-              "value": "[parameters('classifyFunctionKey')]",
+              "properties": {
+                "name": "debug-console",
+                "value": "[parameters('classifyFunctionKey')]"
+              },
               "dependsOn": [
                 "[resourceId('Microsoft.Web/sites', format('func-kdl-{0}', parameters('nameSuffix')))]"
               ]

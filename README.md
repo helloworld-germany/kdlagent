@@ -34,6 +34,12 @@ Azure **Function App** zur Klassifikation klinischer Dokumente (Text, PDFs, Bild
 
 Der Wizard erzeugt den geschützten `classify`-Function-Key und verdrahtet ihn automatisch mit der anonym erreichbaren Debug-Konsole. Es ist kein manueller Konfigurationsschritt erforderlich.
 
+### Fehler während der Bereitstellung
+
+Im Azure-Portal unter *Bereitstellungen → fehlgeschlagene Bereitstellung → Fehlerdetails* die innere Fehlermeldung öffnen. `DeploymentFailed` allein beschreibt noch nicht die Ursache.
+
+Bei `InvalidRequestContent` mit `Could not find member 'value' on object of type 'TemplateResource'` wurde eine fehlerhafte ältere Vorlage verwendet: Der Function-Key muss unter `properties.value` stehen, nicht direkt am Ressourcenobjekt. Die aktuelle Version von [`infra/main.json`](infra/main.json) verwenden und den Wizard nach Veröffentlichung der korrigierten Vorlage erneut über den Button öffnen. Ein Wechsel der Region oder der OpenAI-Kapazität behebt diesen Vorlagenfehler nicht.
+
 ### Nach dem Deployment
 
 ```powershell
@@ -170,6 +176,16 @@ Erfordert `local.settings.json` mit:
 | `EVENT_GRID_TOPIC_ENDPOINT` | Event-Grid-Modus (optional) |
 
 Auth via `DefaultAzureCredential` (Managed Identity in Azure, `az login` lokal).
+
+### Infrastruktur lokal prüfen
+
+```powershell
+az bicep lint --file .\infra\main.bicep
+az bicep build --file .\infra\main.bicep
+npm test
+```
+
+Diese Offline-Prüfungen erstellen keine Azure-Ressourcen. Die Regressionstests prüfen insbesondere die ARM-kompatible Struktur des Function-Keys; Bicep-Build und -Lint allein erkennen den fehlerhaften `value`-Eintrag nicht, da das veröffentlichte Ressourcenschema ihn fälschlich erlaubt. Regionale Verfügbarkeit, Quota und Azure-Berechtigungen werden dabei nicht geprüft.
 
 ## Projektstruktur
 

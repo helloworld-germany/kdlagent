@@ -182,7 +182,12 @@ resource classifyFunction 'Microsoft.Web/sites/functions@2024-11-01' existing = 
 resource classifyDebugKey 'Microsoft.Web/sites/functions/keys@2024-11-01' = if (!empty(functionPackageUrl)) {
   parent: classifyFunction
   name: 'debug-console'
-  value: classifyFunctionKey
+  // The published key schema omits ARM's required properties envelope.
+  #disable-next-line BCP187
+  properties: {
+    name: 'debug-console'
+    value: classifyFunctionKey
+  }
 }
 
 // ── Azure AI Vision (Computer Vision) ───────────────────────────────────────
